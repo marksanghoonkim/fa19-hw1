@@ -64,19 +64,39 @@ AS
 -- Question 2iii
 CREATE VIEW q2iii(playerid, namefirst, namelast, schoolid)
 AS
-  SELECT 1, 1, 1, 1 -- replace this line
+	SELECT Q.playerid, namefirst, namelast, CP.schoolid
+		FROM q2i AS Q
+		LEFT OUTER JOIN collegeplaying AS CP
+		ON Q.playerid = CP.playerid
+		ORDER BY q.playerid DESC, CP.schoolid;
 ;
 
 -- Question 3i
 CREATE VIEW q3i(playerid, namefirst, namelast, yearid, slg)
 AS
-  SELECT 1, 1, 1, 1, 1 -- replace this line
+
+	SELECT b.playerid, p.namefirst, p.namelast, b.yearid, (
+			CAST((b.h2b * 2 + h3b * 3 + hr * 4 + (h - h2b - h3b - hr)) AS float) /
+			CAST(ab AS float)
+		) AS slg
+	FROM batting b, people p
+	WHERE b.playerid = p.playerid AND b.ab > 50
+	ORDER BY slg DESC LIMIT 10;
+
 ;
 
 -- Question 3ii
 CREATE VIEW q3ii(playerid, namefirst, namelast, lslg)
 AS
-  SELECT 1, 1, 1, 1 -- replace this line
+	SELECT b.playerid, p.namefirst, p.namelast, (
+			CAST((SUM(b.h2b) * 2 + SUM(h3b) * 3 + SUM(hr) * 4 + (SUM(h) - SUM(h2b) - SUM(h3b) - SUM(hr))) AS float) /
+			CAST(SUM(ab) AS float)
+		) AS lslg
+	FROM batting b, people p
+	WHERE ab > 0 AND b.playerid = p.playerid
+	GROUP BY b.playerid, p.playerid
+	HAVING SUM(ab) >= 50
+	ORDER BY lslg DESC, playerid LIMIT 10;
 ;
 
 -- Question 3iii
