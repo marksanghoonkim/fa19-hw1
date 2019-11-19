@@ -176,6 +176,12 @@ WHERE (yearid BETWEEN 2000 AND 2001) AND (yearid, salary) IN (
 ;
 -- Question 4v
 CREATE VIEW q4v(team, diffAvg) AS
-  SELECT 1, 1 -- replace this line
+
+SELECT a.teamid as team, MAX(salary) - MIN(salary)
+FROM allstarfull a, salaries s
+WHERE a.playerid = s.playerid AND a.yearid = s.yearid AND a.yearid='2016'
+GROUP BY team
+ORDER BY team;
+
 ;
 
